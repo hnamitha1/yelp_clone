@@ -1,6 +1,9 @@
 require 'rails_helper'
+require 'web_helper'
 
 feature 'restaurants' do
+  
+
   context 'no restaurants have been added' do
     scenario 'should display a prompt to add a restaurant' do
       visit '/restaurants'
@@ -13,7 +16,6 @@ feature 'restaurants' do
 	  before do
 	    Restaurant.create(name: 'KFC')
 	  end
-
 	  scenario 'display restaurants' do
 	    visit '/restaurants'
 	    expect(page).to have_content('KFC')
@@ -23,6 +25,7 @@ feature 'restaurants' do
 
 	context 'creating restaurants' do
     scenario 'prompts user to fill out a form, then displays the new restaurant' do
+      my_sign_up
       visit '/restaurants'
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'KFC'
@@ -49,6 +52,7 @@ feature 'restaurants' do
     before { Restaurant.create name: 'KFC', description: 'Deep fried goodness' }
 
     scenario 'let a user edit a restaurant' do
+      my_sign_up
       visit '/restaurants'
       click_link 'Edit KFC'
       fill_in 'Name', with: 'Kentucky Fried Chicken'
@@ -66,6 +70,7 @@ feature 'restaurants' do
     before { Restaurant.create name: 'KFC', description: 'Deep fried goodness' }
 
     scenario 'removes a restaurant when a user clicks a delete link' do
+      my_sign_up
       visit '/restaurants'
       click_link 'Delete KFC'
       expect(page).not_to have_content 'KFC'
@@ -75,13 +80,24 @@ feature 'restaurants' do
   end
 
   context 'an invalid restaurant' do
-    it 'does not let you submit a name that is too short' do
+    scenario 'does not let you submit a name that is too short' do
+      my_sign_up
       visit '/restaurants'
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'kf'
       click_button 'Create Restaurant'
       expect(page).not_to have_css 'h2', text: 'kf'
       expect(page).to have_content 'error'
+    end
+  end
+
+  context 'user must login' do
+    scenario 'unable to create restaurant if user not login' do
+      visit '/restaurants'
+      click_link 'Add a restaurant'
+      expect(current_path).to eq '/users/sign_in'
+      #expect(page).to eq 'Log in'
+      expect(page).not_to have_content 'Name'
     end
   end
 end
