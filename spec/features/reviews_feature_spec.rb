@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'web_helper'
 
 feature 'reviewing' do
   before { 
@@ -20,6 +21,12 @@ feature 'reviewing' do
 
     expect(current_path).to eq '/restaurants'
     expect(page).to have_content("so so")
+  end
+
+  scenario 'displays an average rating for all reviews' do
+    leave_review('So so', '3')
+    leave_review('Great', '3')
+    expect(page).to have_content('Average rating: 3')
   end
 
 end
