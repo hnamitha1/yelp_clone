@@ -2,6 +2,7 @@
   <% @restaurants.each do |restaurant| %>
     <h2><%= link_to restaurant.name, restaurant_path(restaurant) %></h2>
     <%= restaurant.description %>
+    <%= image_tag restaurant.image.url(:thumb) %>
     <h4> Reviews: </h4>
     <br>
      	<% restaurant.reviews.each do |review| %>
