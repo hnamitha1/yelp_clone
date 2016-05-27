@@ -11,14 +11,8 @@ class Restaurant < ActiveRecord::Base
   validates_attachment_content_type :image, :content_type => /\Aimage\/.*\Z/    
 	
 	def average_rating
-    return "N/A" if reviews.none?
-    sum = 0
-    i = 0
-    reviews.each do |review|
-      sum += review.rating
-      i+=1
-    end
-    return sum/i.to_f
+    return 'N/A' if reviews.none?
+    reviews.average(:rating)
   end
 
 	#def average_rating
